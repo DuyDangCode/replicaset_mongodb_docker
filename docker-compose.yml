@@ -1,0 +1,57 @@
+version: '1.0.0'
+services:
+  mongo-primary:
+    container_name: mongo-primary
+    image: mongo
+    expose:
+      - 217017
+    ports:
+      - 27018:27017
+    command: mongod --replSet "rs0"
+    environment:
+      - MONGO_INIT_REPLICASET=rs0
+    restart: always
+    networks:
+      - mongo_replica
+    volumes:
+      - ./replica_volume/data/primary:/data/db
+
+  mongo-secondary-1:
+    container_name: mongo-secondary-1
+    image: mongo
+    expose:
+      - 217017
+    ports:
+      - 27019:27017
+    command: mongod --replSet "rs0"
+    environment:
+      - MONGO_INIT_REPLICASET=rs0
+    restart: always
+    networks:
+      - mongo_replica
+    volumes:
+      - ./replica_volume/data/secondary1:/data/db
+
+  mongo-secondary-2:
+    container_name: mongo-secondary-2
+    image: mongo
+    expose:
+      - 217017
+    ports:
+      - 27020:27017
+    command: mongod --replSet "rs0"
+    environment:
+      - MONGO_INIT_REPLICASET=rs0
+    restart: always
+    networks:
+      - mongo_replica
+    volumes:
+      - ./replica_volume/data/secondary2:/data/db
+volumes:
+  mongo-primary:
+  mongo-secondary-1:
+  mongo-secondary-2:
+
+networks:
+  mongo_replica:
+    driver: bridge
